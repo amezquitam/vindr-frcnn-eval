@@ -14,12 +14,13 @@ RUN apt-get install -y \
 
 RUN git clone https://github.com/OpenMathLib/OpenBLAS.git
 RUN cd OpenBLAS && \
-    make && \
-    make -j=$(nproc) PREFIX=/usr/local install
+    make
 
-RUN echo "/opt/OpenBLAS/lib" | sudo tee /etc/ld.so.conf.d/openblas.conf
+RUN cd OpenBLAS && make PREFIX=/usr/local install
+
+RUN echo "/usr/local/OpenBLAS/lib" | tee /etc/ld.so.conf.d/openblas.conf
 RUN ldconfig
-RUN sudo cp -r /opt/OpenBLAS/include/* /usr/local/include
+# RUN cp -r /usr/local/OpenBLAS/include/* /usr/local/include
 
 # Actualizar e instala python y pip legacy
 RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py && \
@@ -39,25 +40,41 @@ RUN pip install --upgrade pip && pip install \
 
 # Clonar los repositorios necesarios
 WORKDIR /root
-RUN git clone --recursive https://github.com/rbgirshick/py-faster-rcnn.git
+RUN echo "deb http://ppa.launchpad.net/marutter/rrutter/ubuntu xenial main" >> /etc/apt/sources.list \
+    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9 \
+    && apt-get update \
+    && apt-get install -y libatlas-base-dev
+
+RUN apt-get install libboost-all-dev -y && \
+    rm -rf /var/lib/apt/lists/*
+    
 RUN git clone https://github.com/riblidezso/frcnn_cad.git
+COPY py-faster-rcnn/ /root/py-faster-rcnn
 
 # Compilación de Caffe
 WORKDIR /root/py-faster-rcnn/caffe-fast-rcnn
 RUN cp Makefile.config.example Makefile.config
 
+
 RUN mkdir build && \
     cd build && \
-    cmake .. && \
-    make all && \
-    make install && \
-    make runtest
+    cmake ..
+
+WORKDIR /root/py-faster-rcnn/caffe-fast-rcnn/build
+
+RUN make -j30 all
+RUN make install
+RUN make -j30 pycaffe
+# RUN make runtest
 
 # Compilación de py-faster-rcnn
-WORKDIR /root/py-faster-rcnn
-RUN make
+WORKDIR /root/py-faster-rcnn/lib
+RUN make -j30
 
 # ENV PYTHONPATH /root/py-faster-rcnn/caffe-fast-rcnn/python:$PYTHONPATH
 
-WORKDIR /root/py-faster-rcnn/
-CMD ["sleep", "infinity"]
+WORKDIR /root/frcnn_cad
+
+COPY ./fcrnn_cad/demo.py /root/frcnn_cad/demo.py
+
+CMD ["python", "demo.py"]
