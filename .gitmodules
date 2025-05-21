@@ -1,12 +1,14 @@
 [submodule "frcnn_cad"]
     path = frcnn_cad
     url = https://github.com/amezquitam/frcnn_cad.git
+    branch = master
 
 [submodule "py-faster-rcnn"]
     path = py-faster-rcnn
     url = https://github.com/amezquitam/py-faster-rcnn.git
+    branch = master
 
 [submodule "py-faster-rcnn/caffe-fast-rcnn"]
     path = py-faster-rcnn/caffe-fast-rcnn
     url = https://github.com/amezquitam/caffe-fast-rcnn.git
-
+    branch = master
