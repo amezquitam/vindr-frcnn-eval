@@ -1,0 +1,7 @@
+[submodule "frcnn_cadd"]
+    path = frcnn_cadd
+    url = https://github.com/amezquitam/frcnn_cadd.git
+
+[submodule "py-faster-rcnn"]
+    path = py-faster-rcnn
+    url = https://github.com/amezquitam/py-faster-rcnn.git
