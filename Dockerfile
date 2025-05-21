@@ -75,6 +75,6 @@ RUN make -j30
 
 WORKDIR /root/frcnn_cad
 
-COPY ./fcrnn_cad/demo.py /root/frcnn_cad/demo.py
+COPY ./frcnn_cad/demo.py /root/frcnn_cad/demo.py
 
 CMD ["python", "demo.py"]
