@@ -1,7 +1,8 @@
 FROM eywalker/nvidia-cuda:8.0-cudnn5-devel-ubuntu16.04
 
 # Instalar dependencias del sistema
-RUN apt-get update && apt-get install -y \
+RUN apt-get update -y 
+RUN apt-get install -y \
     python-dev python-pip python-numpy \
     python-scipy python-opencv \
     libprotobuf-dev libleveldb-dev libsnappy-dev \
@@ -9,6 +10,16 @@ RUN apt-get update && apt-get install -y \
     libgflags-dev libgoogle-glog-dev liblmdb-dev \
     git cmake build-essential \
     && rm -rf /var/lib/apt/lists/*
+
+
+RUN git clone https://github.com/OpenMathLib/OpenBLAS.git
+RUN cd OpenBLAS && \
+    make && \
+    make -j=$(nproc) PREFIX=/usr/local install
+
+RUN echo "/opt/OpenBLAS/lib" | sudo tee /etc/ld.so.conf.d/openblas.conf
+RUN ldconfig
+RUN sudo cp -r /opt/OpenBLAS/include/* /usr/local/include
 
 # Actualizar e instala python y pip legacy
 RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py && \
@@ -35,13 +46,18 @@ RUN git clone https://github.com/riblidezso/frcnn_cad.git
 WORKDIR /root/py-faster-rcnn/caffe-fast-rcnn
 RUN cp Makefile.config.example Makefile.config
 
-RUN make -j$(nproc) && make pycaffe
+RUN mkdir build && \
+    cd build && \
+    cmake .. && \
+    make all && \
+    make install && \
+    make runtest
 
 # Compilación de py-faster-rcnn
 WORKDIR /root/py-faster-rcnn
 RUN make
 
-ENV PYTHONPATH /root/py-faster-rcnn/caffe-fast-rcnn/python:$PYTHONPATH
+# ENV PYTHONPATH /root/py-faster-rcnn/caffe-fast-rcnn/python:$PYTHONPATH
 
 WORKDIR /root/py-faster-rcnn/
-CMD ["/bin/bash"]
+CMD ["sleep", "infinity"]
