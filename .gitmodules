@@ -1,6 +1,6 @@
-[submodule "frcnn_cadd"]
-    path = frcnn_cadd
-    url = https://github.com/amezquitam/frcnn_cadd.git
+[submodule "frcnn_cad"]
+    path = frcnn_cad
+    url = https://github.com/amezquitam/frcnn_cad.git
 
 [submodule "py-faster-rcnn"]
     path = py-faster-rcnn
