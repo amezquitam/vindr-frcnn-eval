@@ -62,14 +62,14 @@ RUN mkdir build && \
 
 WORKDIR /root/py-faster-rcnn/caffe-fast-rcnn/build
 
-RUN make -j30 all
+RUN make -j $(nproc) all
 RUN make install
-RUN make -j30 pycaffe
+RUN make -j $(nproc) pycaffe
 # RUN make runtest
 
 # Compilación de py-faster-rcnn
 WORKDIR /root/py-faster-rcnn/lib
-RUN make -j30
+RUN make -j $(nproc)
 
 # ENV PYTHONPATH /root/py-faster-rcnn/caffe-fast-rcnn/python:$PYTHONPATH
 
