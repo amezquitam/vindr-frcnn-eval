@@ -3,5 +3,5 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: ["bash"]
+    command: ["tail", "-f", "/dev/null"]
     
