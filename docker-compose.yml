@@ -1,0 +1,7 @@
+services:
+  vindr-frcnn-eval:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: ["bash"]
+    

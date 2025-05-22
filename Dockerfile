@@ -47,9 +47,9 @@ RUN echo "deb http://ppa.launchpad.net/marutter/rrutter/ubuntu xenial main" >> /
 
 RUN apt-get install libboost-all-dev -y && \
     rm -rf /var/lib/apt/lists/*
-    
-RUN git clone https://github.com/riblidezso/frcnn_cad.git
-COPY py-faster-rcnn/ /root/py-faster-rcnn
+
+# Copiar todos los archivos
+COPY ./ /root/
 
 # Compilación de Caffe
 WORKDIR /root/py-faster-rcnn/caffe-fast-rcnn
